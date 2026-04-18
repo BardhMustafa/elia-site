@@ -1,0 +1,331 @@
+---
+const rotatingWords = ['markets', 'customers', 'partners', 'capital'];
+const countries = [
+  'Kosovo', 'Albania', 'North Macedonia', 'Germany', 'Switzerland',
+  'United Kingdom', 'United States', 'UAE', 'Saudi Arabia', 'Turkey',
+  'Italy', 'Austria', 'Netherlands', 'Sweden', 'France', 'Canada',
+];
+---
+
+<section class="hero" id="hero">
+  <div class="container hero-inner">
+
+    <!-- Top meta -->
+    <div class="hero-meta">
+      <span class="hero-location">
+        <span class="dot"></span>
+        Pristina · Kosovo
+      </span>
+      <span class="hero-established">Est. 2021 — 100+ clients across 30+ countries</span>
+    </div>
+
+    <!-- Main content grid -->
+    <div class="hero-grid">
+
+      <!-- Headline -->
+      <div class="hero-left">
+        <h1 class="hero-headline serif">
+          Your bridge to<br />
+          <span class="rotator" aria-live="polite" data-words={JSON.stringify(rotatingWords)}>
+            <span class="rot-sizer" aria-hidden="true">{rotatingWords.reduce((a, b) => a.length > b.length ? a : b)}</span>
+            <span class="rot-current" id="rot-current">{rotatingWords[0]}</span>
+          </span>
+          <span class="headline-tail">beyond borders.</span>
+        </h1>
+      </div>
+
+      <!-- Supporting -->
+      <div class="hero-right">
+        <p class="hero-sub">
+          Elia Partnerships connects Kosovar businesses with the world and guides international investors into the Balkan market — with strategy, legal clarity, and local expertise.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#services" class="btn btn-gold">
+            Explore our services
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arr-right"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#contact" class="btn btn-light">Book a call</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Country marquee -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      {[...countries, ...countries].map((c) => (
+        <span class="marquee-item">
+          <span class="serif italic">{c}</span>
+          <span class="marquee-sep">✦</span>
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <a href="#clients" class="scroll-cue" aria-label="Scroll">
+    <span class="scroll-line"></span>
+    <span class="scroll-label">Scroll</span>
+  </a>
+</section>
+
+<script>
+  const rotator = document.querySelector('.rotator') as HTMLElement | null;
+  const current = document.getElementById('rot-current');
+  if (rotator && current) {
+    const words: string[] = JSON.parse(rotator.dataset.words || '[]');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced && words.length > 1) {
+      let i = 0;
+      setInterval(() => {
+        current.classList.add('out');
+        setTimeout(() => {
+          i = (i + 1) % words.length;
+          current.textContent = words[i];
+          current.classList.remove('out');
+          current.classList.add('in');
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => current.classList.remove('in'));
+          });
+        }, 450);
+      }, 2400);
+    }
+  }
+</script>
+
+<style>
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--navy-900);
+  color: var(--paper);
+  padding: 6rem 0 0;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(184,148,74,0.10) 0%, transparent 55%),
+    radial-gradient(circle at 85% 80%, rgba(184,148,74,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(250,248,244,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(250,248,244,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+.hero-inner { position: relative; z-index: 1; }
+
+/* Top meta */
+.hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid rgba(250,248,244,0.08);
+  margin-bottom: var(--s-5);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(250,248,244,0.55);
+}
+.hero-location { display: inline-flex; align-items: center; gap: 0.55rem; }
+.dot {
+  width: 7px; height: 7px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(184,148,74,0.15);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+.hero-established { color: rgba(250,248,244,0.4); }
+
+/* Main grid */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--s-6);
+  align-items: end;
+  margin-bottom: var(--s-5);
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid rgba(250,248,244,0.08);
+}
+
+.hero-headline {
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  line-height: 1.02;
+  font-weight: 500;
+  color: var(--paper);
+  letter-spacing: -0.025em;
+}
+.headline-tail { display: block; }
+
+/* Rotator */
+.rotator {
+  position: relative;
+  display: inline-block;
+  vertical-align: baseline;
+  color: var(--gold);
+  font-style: italic;
+  font-weight: 500;
+}
+.rot-sizer {
+  visibility: hidden;
+  display: inline-block;
+  pointer-events: none;
+}
+.rot-current {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.rot-current.out {
+  opacity: 0;
+  transform: translateY(-0.3em);
+}
+.rot-current.in {
+  opacity: 0;
+  transform: translateY(0.3em);
+}
+
+/* subtle underline under rotator */
+.rotator::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -0.05em;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(184,148,74,0.55), transparent);
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding-bottom: 0.5rem;
+}
+.hero-sub {
+  font-size: var(--t-lg);
+  line-height: 1.65;
+  color: rgba(250,248,244,0.72);
+  max-width: 460px;
+}
+.hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+/* Stats */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-3);
+  padding: var(--s-4) 0;
+  border-top: 1px solid rgba(250,248,244,0.08);
+  border-bottom: 1px solid rgba(250,248,244,0.08);
+}
+.stat { display: flex; flex-direction: column; gap: 0.2rem; }
+.stat-num {
+  font-size: var(--t-3xl);
+  font-weight: 500;
+  color: var(--paper);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.stat-plus { color: var(--gold); font-weight: 500; }
+.stat-label {
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(250,248,244,0.45);
+}
+
+/* Country marquee */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  padding: var(--s-3) 0;
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+.marquee-track {
+  display: inline-flex;
+  gap: var(--s-3);
+  white-space: nowrap;
+  animation: slide 45s linear infinite;
+  will-change: transform;
+}
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  color: rgba(250,248,244,0.35);
+  letter-spacing: -0.01em;
+}
+.marquee-item .italic { font-style: italic; }
+.marquee-sep { color: var(--gold); opacity: 0.55; font-size: 0.7em; }
+
+@keyframes slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Scroll cue */
+.scroll-cue {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(250,248,244,0.4);
+  font-size: var(--t-xs);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  z-index: 2;
+}
+.scroll-cue:hover { color: var(--gold); }
+.scroll-line {
+  width: 1px; height: 32px;
+  background: linear-gradient(to bottom, transparent, currentColor);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+  50% { opacity: 1; transform: scaleY(1.1); }
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(184,148,74,0.15); }
+  50% { box-shadow: 0 0 0 7px rgba(184,148,74,0.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track, .dot, .scroll-line { animation: none; }
+  .rot-current { transition: none; }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero { padding-top: 5rem; }
+  .hero-grid { grid-template-columns: 1fr; gap: var(--s-4); }
+  .hero-stats { grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+}
+@media (max-width: 520px) {
+  .hero-meta { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+  .hero-established { display: none; }
+}
+</style>

@@ -1,0 +1,171 @@
+---
+const year = new Date().getFullYear();
+
+const outbound = [
+  { label: 'Partner Matching',       href: '/services/partner-matching' },
+  { label: 'Legal & Compliance',     href: '/services/legal-compliance' },
+  { label: 'Logistics Optimization', href: '/services/logistics-optimization' },
+  { label: 'Franchise Development',  href: '/services/franchise-development' },
+];
+const inbound = [
+  { label: 'Investment Partnership', href: '/services/investment-partnership' },
+  { label: 'Real Estate',            href: '/services/real-estate' },
+  { label: 'Product Placement',      href: '/services/product-placement' },
+  { label: 'Virtual Office',         href: '/services/virtual-office' },
+  { label: 'Registration & Legal',   href: '/services/registration-legal' },
+  { label: 'Industry Experts',       href: '/services/industry-experts' },
+];
+const digital = [
+  { label: 'Digital Marketing', href: '/services/marketing' },
+  { label: 'E-Commerce',        href: '/services/ecommerce' },
+  { label: 'Web Development',   href: '/services/web-development' },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+
+    <div class="footer-top">
+      <!-- Brand column -->
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label="Elia Partnerships">
+          <img src="/logo-mark.svg" alt="" class="footer-logo-mark" width="36" height="36" />
+          <span class="footer-logo-text">Elia <span>Partnerships</span></span>
+        </a>
+        <p class="footer-tagline">
+          A bridge between Kosovo and the world — facilitating global expansion, and welcoming international investment into the Balkans.
+        </p>
+        <div class="footer-contact">
+          <a href="mailto:info@elia-partnerships.com">info@elia-partnerships.com</a>
+          <span>Pristina · Kosovo</span>
+        </div>
+      </div>
+
+      <!-- Nav columns -->
+      <div class="footer-nav">
+        <div class="footer-col">
+          <h4>Digital</h4>
+          <ul>{digital.map(l => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+        </div>
+        <div class="footer-col">
+          <h4>Outbound</h4>
+          <ul>{outbound.map(l => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+        </div>
+        <div class="footer-col">
+          <h4>Inbound</h4>
+          <ul>{inbound.map(l => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} Elia Partnerships. All rights reserved.</p>
+      <div class="footer-social">
+        <a href="https://linkedin.com/company/elia-partnerships" target="_blank" rel="noopener" aria-label="LinkedIn">LinkedIn</a>
+        <a href="https://twitter.com/eliaglobalconnect" target="_blank" rel="noopener" aria-label="X / Twitter">X</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+.site-footer {
+  background: var(--navy-900);
+  color: rgba(250,248,244,0.65);
+  padding: var(--s-7) 0 var(--s-4);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: var(--s-6);
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Brand */
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--paper);
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  margin-bottom: var(--s-3);
+}
+.footer-logo-mark {
+  width: 36px; height: 36px;
+  flex-shrink: 0;
+  display: block;
+  border-radius: 6px;
+}
+.footer-logo-text { font-weight: 500; line-height: 1; }
+.footer-logo-text span { font-style: italic; font-weight: 400; opacity: 0.7; }
+
+.footer-tagline {
+  font-size: var(--t-sm);
+  line-height: 1.7;
+  max-width: 340px;
+  margin-bottom: var(--s-3);
+}
+
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: var(--t-sm);
+}
+.footer-contact a {
+  color: var(--paper);
+  transition: color 0.2s;
+}
+.footer-contact a:hover { color: var(--gold); }
+.footer-contact span { color: rgba(250,248,244,0.4); }
+
+/* Nav columns */
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-4);
+}
+.footer-col h4 {
+  color: var(--paper);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: var(--s-3);
+}
+.footer-col ul { display: flex; flex-direction: column; gap: 0.55rem; }
+.footer-col a {
+  font-size: var(--t-sm);
+  color: rgba(250,248,244,0.55);
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--gold); }
+
+/* Bottom */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--s-3);
+  font-size: var(--t-xs);
+  color: rgba(250,248,244,0.4);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.footer-social { display: flex; gap: 1.5rem; }
+.footer-social a { color: rgba(250,248,244,0.5); transition: color 0.2s; }
+.footer-social a:hover { color: var(--gold); }
+
+@media (max-width: 900px) {
+  .footer-top { grid-template-columns: 1fr; gap: var(--s-5); }
+  .footer-tagline { max-width: 100%; }
+}
+@media (max-width: 600px) {
+  .footer-nav { grid-template-columns: 1fr; gap: var(--s-3); }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+</style>

@@ -1,0 +1,190 @@
+---
+const directions = [
+  {
+    num: '01',
+    kicker: 'Digital',
+    title: 'Build your presence',
+    desc: 'Websites, brand, marketing, and SEO engineered to convert — the foundation every export and expansion play rests on.',
+    href: '#services',
+    anchor: 'digital',
+  },
+  {
+    num: '02',
+    kicker: 'Outbound',
+    title: 'Kosovo to the world',
+    desc: 'Export strategy, trade fairs, distribution partners, and international contracts — we open doors in 30+ markets.',
+    href: '#services',
+    anchor: 'outbound',
+  },
+  {
+    num: '03',
+    kicker: 'Inbound',
+    title: 'World to the Balkans',
+    desc: 'Market entry, company formation, local partnerships, and franchise development — softened landings for foreign capital.',
+    href: '#services',
+    anchor: 'inbound',
+  },
+];
+---
+
+<section id="directions" class="directions">
+  <div class="container">
+
+    <header class="dir-head">
+      <span class="eyebrow reveal">Three directions</span>
+      <h2 class="dir-title serif reveal reveal-1">
+        Pick the flow that fits<br />
+        <span class="italic">your ambition.</span>
+      </h2>
+    </header>
+
+    <div class="dir-grid">
+      {directions.map((d, i) => (
+        <a href={d.href} class={`dir-card reveal reveal-${i + 1}`} data-dir={d.anchor}>
+          <div class="dir-top">
+            <span class="dir-num serif">{d.num}</span>
+            <span class="dir-kicker">{d.kicker}</span>
+          </div>
+
+          <h3 class="dir-card-title serif">{d.title}</h3>
+          <p class="dir-desc">{d.desc}</p>
+
+          <span class="dir-cta">
+            Explore
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arr-right"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+
+          <span class="dir-line"></span>
+        </a>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+.directions {
+  background: var(--paper-2);
+  padding: var(--section-pad) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.dir-head {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--s-4);
+  align-items: end;
+  margin-bottom: var(--s-5);
+  padding-bottom: var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+.dir-title {
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.dir-title .italic { font-style: italic; color: var(--gold); }
+
+.dir-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-3);
+}
+
+.dir-card {
+  position: relative;
+  background: var(--white, #fff);
+  border: 1px solid var(--line);
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+  overflow: hidden;
+  color: var(--ink);
+  min-height: 320px;
+}
+.dir-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 0%, rgba(184,148,74,0.08), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.dir-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+}
+.dir-card:hover::before { opacity: 1; }
+
+.dir-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  position: relative;
+}
+.dir-num {
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.dir-kicker {
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+}
+.dir-card-title {
+  font-size: clamp(1.5rem, 2.25vw, 1.95rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  margin-top: var(--s-2);
+  color: var(--ink);
+  position: relative;
+}
+.dir-desc {
+  font-size: var(--t-base);
+  line-height: 1.65;
+  color: var(--ink-60);
+  flex: 1;
+  position: relative;
+}
+.dir-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-top: var(--s-2);
+  position: relative;
+}
+.dir-cta .arr-right { width: 16px; height: 16px; transition: transform 0.3s; }
+.dir-card:hover .dir-cta { color: var(--gold); }
+.dir-card:hover .dir-cta .arr-right { transform: translateX(4px); }
+
+.dir-line {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.dir-card:hover .dir-line { transform: scaleX(1); }
+
+@media (max-width: 900px) {
+  .dir-head { grid-template-columns: 1fr; gap: var(--s-2); align-items: start; }
+  .dir-grid { grid-template-columns: 1fr; }
+  .dir-card { min-height: auto; }
+}
+</style>

@@ -1,0 +1,196 @@
+---
+const navLinks = [
+  { label: 'Services', href: '/#services' },
+  { label: 'About',    href: '/#about' },
+  { label: 'Contact',  href: '/#contact' },
+];
+---
+
+<header class="site-header" id="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo" aria-label="Elia Partnerships — Home">
+      <img src="/logo-mark.svg" alt="" class="logo-mark" width="36" height="36" />
+      <span class="logo-text">Elia <span class="logo-sub">Partnerships</span></span>
+    </a>
+
+    <nav class="nav-desktop" aria-label="Main navigation">
+      {navLinks.map((link) => (
+        <a href={link.href} class="nav-link">{link.label}</a>
+      ))}
+      <a href="/#contact" class="btn btn-gold nav-cta">
+        Book a Call
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arr-right"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </nav>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
+
+  <nav class="nav-mobile" id="nav-mobile" aria-label="Mobile navigation">
+    <div class="container">
+      {navLinks.map((link) => (
+        <a href={link.href} class="nav-mobile-link">{link.label}</a>
+      ))}
+      <a href="/#contact" class="btn btn-gold nav-mobile-cta">Book a Call</a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const toggle = document.getElementById('nav-toggle')!;
+  const mobileNav = document.getElementById('nav-mobile')!;
+
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    mobileNav.classList.toggle('open', !open);
+    toggle.classList.toggle('open', !open);
+  });
+
+  mobileNav.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      mobileNav.classList.remove('open');
+      toggle.classList.remove('open');
+    });
+  });
+</script>
+
+<style>
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease), padding 0.3s var(--ease);
+  padding: 1.5rem 0;
+  border-bottom: 1px solid transparent;
+}
+.site-header.scrolled {
+  background: rgba(11, 22, 34, 0.95);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom-color: rgba(255,255,255,0.06);
+  padding: 0.9rem 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--paper);
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+.logo-mark {
+  width: 36px; height: 36px;
+  flex-shrink: 0;
+  display: block;
+  border-radius: 6px;
+}
+.logo-text { line-height: 1; }
+.logo-sub {
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(250,248,244,0.7);
+}
+
+/* Desktop nav */
+.nav-desktop {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+.nav-link {
+  color: rgba(250,248,244,0.75);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  transition: color 0.2s;
+  position: relative;
+  padding: 0.25rem 0;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s var(--ease);
+}
+.nav-link:hover { color: var(--paper); }
+.nav-link:hover::after { transform: scaleX(1); }
+
+.nav-cta { padding: 0.55rem 1.1rem; font-size: var(--t-sm); }
+
+/* Mobile toggle */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  width: 32px; height: 32px;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px; height: 1.5px;
+  background: var(--paper);
+  transition: all 0.3s var(--ease);
+  transform-origin: center;
+}
+.nav-toggle.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+
+/* Mobile nav */
+.nav-mobile {
+  display: none;
+  background: var(--navy-900);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s var(--ease);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.nav-mobile.open { max-height: 400px; }
+.nav-mobile .container {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.nav-mobile-link {
+  color: rgba(250,248,244,0.85);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: color 0.2s;
+}
+.nav-mobile-link:hover { color: var(--gold); }
+.nav-mobile-cta { margin-top: 1.5rem; width: fit-content; }
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .nav-toggle { display: flex; }
+  .nav-mobile { display: block; }
+}
+</style>

@@ -1,0 +1,626 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { serviceCategories, allServices } from '../../data/services';
+import type { Service, ServiceClient } from '../../data/services';
+
+export function getStaticPaths() {
+  return allServices.map((svc) => ({
+    params: { slug: svc.slug },
+    props:  { svc },
+  }));
+}
+
+const { svc } = Astro.props as { svc: Service };
+
+const category = serviceCategories.find((c) => c.id === svc.category)!;
+const siblings = category.services.filter((s) => s.id !== svc.id);
+
+const allInCat = category.services;
+const currentIdx = allInCat.findIndex((s) => s.id === svc.id);
+const prev = allInCat[currentIdx - 1] ?? null;
+const next = allInCat[currentIdx + 1] ?? null;
+
+const catIndex = serviceCategories.findIndex(c => c.id === svc.category);
+---
+
+<Layout
+  title={`${svc.title} | Elia Partnerships`}
+  description={`${svc.tagline} — Elia Partnerships, business internationalization services in Kosovo & the Balkans.`}
+>
+
+  <!-- Hero -->
+  <section class="svc-hero">
+    <div class="container">
+
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href={`/#${svc.category}`}>{category.label}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{svc.title}</span>
+      </nav>
+
+      <!-- Meta row -->
+      <div class="svc-meta">
+        <span class="svc-cat-num serif">0{catIndex + 1}</span>
+        <span class="svc-cat-line"></span>
+        <span class="svc-cat-label">{category.label} · Service 0{currentIdx + 1}</span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="svc-title serif">{svc.title}</h1>
+      <p class="svc-tagline serif-italic">{svc.tagline}</p>
+    </div>
+  </section>
+
+  <!-- Body -->
+  <section class="svc-body">
+    <div class="container svc-body-grid">
+
+      <!-- Main content -->
+      <article class="svc-main">
+
+        <!-- Overview -->
+        <section class="svc-block">
+          <span class="block-label">Overview</span>
+          <p class="svc-lead">{svc.description}</p>
+        </section>
+
+        <!-- What's included -->
+        <section class="svc-block">
+          <span class="block-label">What's included</span>
+          <ol class="svc-bullets">
+            {svc.bullets.map((b, i) => (
+              <li>
+                <span class="bullet-num serif">{String(i + 1).padStart(2, '0')}</span>
+                <span class="bullet-text">{b}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <!-- Why Elia -->
+        <section class="svc-block">
+          <span class="block-label">Why Elia Partnerships</span>
+          <div class="why-grid">
+            <div class="why-item">
+              <span class="why-num serif">01</span>
+              <h3>Local expertise</h3>
+              <p>Deep knowledge of Kosovo and the Balkan landscape, built from years on the ground.</p>
+            </div>
+            <div class="why-item">
+              <span class="why-num serif">02</span>
+              <h3>Trusted network</h3>
+              <p>Access to a verified network of partners, legal experts, and market specialists.</p>
+            </div>
+            <div class="why-item">
+              <span class="why-num serif">03</span>
+              <h3>Fast execution</h3>
+              <p>We know the terrain — so you move faster, with fewer surprises along the way.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Clients (only if defined) -->
+        {svc.clients && svc.clients.length > 0 && (
+          <section class="svc-block">
+            <span class="block-label">Selected clients</span>
+            <p class="svc-clients-intro">Businesses we've supported with {svc.title.toLowerCase()}.</p>
+            <div class="clients-grid">
+              {svc.clients.map((client: ServiceClient) => (
+                <a href={client.url} target="_blank" rel="noopener noreferrer" class="client-card">
+                  <div class="client-top">
+                    <span class="client-initials serif">
+                      {client.name.split(' ').slice(0, 2).map((w: string) => w[0]).join('')}
+                    </span>
+                    <svg class="client-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                  </div>
+                  <div class="client-body">
+                    <h4>{client.name}</h4>
+                    <span class="client-industry">{client.industry}</span>
+                    <p>{client.description}</p>
+                  </div>
+                  <span class="client-url">{client.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Prev / Next -->
+        <nav class="svc-pager" aria-label="Service navigation">
+          <div class="pager-prev">
+            {prev ? (
+              <a href={`/services/${prev.slug}`} class="pager-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                <div>
+                  <span class="pager-label">Previous</span>
+                  <span class="pager-name">{prev.title}</span>
+                </div>
+              </a>
+            ) : (
+              <a href={`/#${svc.category}`} class="pager-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                <div>
+                  <span class="pager-label">Back to</span>
+                  <span class="pager-name">{category.label} services</span>
+                </div>
+              </a>
+            )}
+          </div>
+          <div class="pager-next">
+            {next && (
+              <a href={`/services/${next.slug}`} class="pager-link pager-link-right">
+                <div>
+                  <span class="pager-label">Next</span>
+                  <span class="pager-name">{next.title}</span>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            )}
+          </div>
+        </nav>
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="svc-sidebar">
+
+        <!-- CTA -->
+        <div class="sb-cta">
+          <h3 class="serif">Start a conversation</h3>
+          <p>Ready to explore {svc.title.toLowerCase()}? We offer a complimentary thirty-minute consultation — no obligation.</p>
+          <a href="/#contact" class="btn btn-gold">
+            Book a call
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arr-right"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="mailto:info@elia-partnerships.com" class="sb-email">info@elia-partnerships.com</a>
+        </div>
+
+        <!-- Related -->
+        {siblings.length > 0 && (
+          <div class="sb-related">
+            <span class="sb-label">More {category.label.toLowerCase()} services</span>
+            <ul>
+              {siblings.map((s) => (
+                <li>
+                  <a href={`/services/${s.slug}`}>
+                    <span>{s.title}</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- All categories -->
+        <div class="sb-cats">
+          <span class="sb-label">All categories</span>
+          <div class="sb-cat-pills">
+            {serviceCategories.map((cat) => (
+              <a
+                href={`/#${cat.id}`}
+                class={`sb-cat-pill${cat.id === svc.category ? ' active' : ''}`}
+              >
+                {cat.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+/* ─── Hero ─────────────────────────────────────────────────── */
+.svc-hero {
+  background: var(--navy-900);
+  color: var(--paper);
+  padding: 9rem 0 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.svc-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(184,148,74,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
+  color: rgba(250,248,244,0.4);
+  margin-bottom: var(--s-5);
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.breadcrumb a {
+  color: rgba(250,248,244,0.55);
+  transition: color 0.2s;
+}
+.breadcrumb a:hover { color: var(--gold); }
+.breadcrumb span[aria-current] { color: var(--paper); }
+
+.svc-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+  position: relative;
+  z-index: 1;
+}
+.svc-cat-num {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--gold);
+}
+.svc-cat-line {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+.svc-cat-label {
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.svc-title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--paper);
+  max-width: 820px;
+  margin-bottom: var(--s-2);
+  position: relative;
+  z-index: 1;
+}
+.svc-tagline {
+  font-size: clamp(1.1rem, 1.75vw, 1.35rem);
+  color: var(--gold);
+  max-width: 680px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Body ─────────────────────────────────────────────────── */
+.svc-body {
+  background: var(--paper);
+  padding: var(--section-pad) 0;
+}
+.svc-body-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--s-6);
+  align-items: start;
+}
+
+/* ─── Main ─────────────────────────────────────────────────── */
+.svc-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-7);
+}
+
+.svc-block {
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid var(--line);
+}
+.svc-block:last-child { border-bottom: none; padding-bottom: 0; }
+
+.block-label {
+  display: inline-block;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  margin-bottom: var(--s-3);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.svc-lead {
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 1.75vw, 1.4rem);
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--ink);
+  max-width: 720px;
+  letter-spacing: -0.01em;
+}
+
+/* Bullets */
+.svc-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 720px;
+}
+.svc-bullets li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-3);
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--line);
+}
+.svc-bullets li:first-child { padding-top: 0; }
+.svc-bullets li:last-child { border-bottom: none; }
+.bullet-num {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--gold);
+  line-height: 1.5;
+}
+.bullet-text {
+  font-size: var(--t-base);
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+/* Why */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-3);
+}
+.why-item { display: flex; flex-direction: column; gap: 0.5rem; }
+.why-num {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+  line-height: 1;
+}
+.why-item h3 {
+  font-family: var(--font-serif);
+  font-size: var(--t-lg);
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.why-item p {
+  font-size: var(--t-sm);
+  line-height: 1.65;
+  color: var(--ink-60);
+}
+
+/* Clients */
+.svc-clients-intro {
+  font-size: var(--t-sm);
+  color: var(--ink-60);
+  margin-bottom: var(--s-3);
+}
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-2);
+}
+.client-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background: var(--white);
+  border: 1px solid var(--line);
+  transition: all 0.25s var(--ease);
+  position: relative;
+  text-decoration: none;
+}
+.client-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.client-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.client-initials {
+  width: 40px; height: 40px;
+  background: var(--navy-900);
+  color: var(--gold);
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.client-arrow {
+  color: var(--ink-40);
+  transition: color 0.2s, transform 0.2s var(--ease);
+}
+.client-card:hover .client-arrow {
+  color: var(--gold);
+  transform: translate(2px, -2px);
+}
+.client-body h4 {
+  font-family: var(--font-serif);
+  font-size: var(--t-lg);
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.2rem;
+}
+.client-industry {
+  display: block;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+.client-body p {
+  font-size: var(--t-sm);
+  line-height: 1.6;
+  color: var(--ink-60);
+}
+.client-url {
+  font-size: var(--t-xs);
+  color: var(--ink-40);
+  font-family: monospace;
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--line);
+  transition: color 0.2s;
+}
+.client-card:hover .client-url { color: var(--gold); }
+
+/* Pager */
+.svc-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line);
+}
+.pager-link {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  transition: all 0.25s var(--ease);
+  max-width: 280px;
+  background: var(--white);
+}
+.pager-link:hover {
+  border-color: var(--gold);
+  transform: translateX(-2px);
+}
+.pager-link-right { text-align: right; flex-direction: row-reverse; }
+.pager-link-right:hover { transform: translateX(2px); }
+.pager-label {
+  display: block;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  margin-bottom: 0.2rem;
+}
+.pager-name {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: var(--t-base);
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.pager-link svg { color: var(--gold); flex-shrink: 0; }
+
+/* ─── Sidebar ─────────────────────────────────────────────── */
+.svc-sidebar {
+  position: sticky;
+  top: 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.sb-cta {
+  background: var(--navy-900);
+  color: var(--paper);
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.sb-cta h3 {
+  font-size: var(--t-xl);
+  font-weight: 500;
+  color: var(--paper);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.sb-cta p {
+  font-size: var(--t-sm);
+  line-height: 1.65;
+  color: rgba(250,248,244,0.7);
+  margin-bottom: var(--s-1);
+}
+.sb-cta .btn-gold { width: fit-content; }
+.sb-email {
+  font-size: var(--t-xs);
+  color: rgba(250,248,244,0.4);
+  font-family: monospace;
+  transition: color 0.2s;
+  margin-top: 0.5rem;
+}
+.sb-email:hover { color: var(--gold); }
+
+.sb-related, .sb-cats {
+  background: var(--white);
+  border: 1px solid var(--line);
+  padding: var(--s-3);
+}
+.sb-label {
+  display: block;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  margin-bottom: var(--s-2);
+}
+.sb-related ul { display: flex; flex-direction: column; }
+.sb-related a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  transition: color 0.2s;
+}
+.sb-related li:last-child a { border-bottom: none; }
+.sb-related a:hover { color: var(--gold); }
+.sb-related svg { color: var(--ink-40); flex-shrink: 0; transition: color 0.2s; }
+.sb-related a:hover svg { color: var(--gold); }
+
+.sb-cat-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.sb-cat-pill {
+  font-size: var(--t-xs);
+  font-weight: 500;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--ink-20);
+  color: var(--ink-60);
+  transition: all 0.2s;
+}
+.sb-cat-pill:hover { border-color: var(--ink); color: var(--ink); }
+.sb-cat-pill.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* ─── Responsive ──────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .svc-body-grid { grid-template-columns: 1fr; }
+  .svc-sidebar { position: static; }
+  .why-grid, .clients-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .why-grid, .clients-grid { grid-template-columns: 1fr; }
+  .svc-pager { flex-direction: column; }
+  .pager-link { max-width: 100%; }
+}
+</style>

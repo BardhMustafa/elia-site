@@ -1,0 +1,476 @@
+---
+import { serviceCategories } from '../data/services';
+---
+
+<section id="services" class="services-section">
+
+  <!-- Section intro (editorial style) -->
+  <div class="services-intro">
+    <div class="container">
+      <div class="intro-grid">
+        <div class="intro-left">
+          <span class="eyebrow">Our services</span>
+          <h2 class="intro-title serif">
+            Thirteen services.<br />
+            <span class="italic">Three</span> clear directions.
+          </h2>
+        </div>
+        <div class="intro-right">
+          <p>
+            Whether you're taking a Kosovar brand abroad, entering the Balkan market from outside, or building a digital presence that crosses borders — we've structured our practice around three pillars, each with specialists dedicated to it.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky progress rail -->
+  <aside class="rail" id="rail" aria-hidden="true">
+    <div class="rail-inner">
+      {serviceCategories.map((cat) => (
+        <div class="rail-cat" data-cat={cat.id}>
+          <span class="rail-cat-label">{cat.label}</span>
+          <div class="rail-dots">
+            {cat.services.map((svc) => (
+              <button
+                class="rail-dot"
+                data-target={`service-${svc.id}`}
+                aria-label={svc.title}
+                title={svc.title}
+              ></button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </aside>
+
+  <!-- Service panels -->
+  <div class="panels">
+    {serviceCategories.map((cat, catIdx) => (
+      <div class="cat-group" id={cat.id} data-cat={cat.id}>
+
+        <!-- Category intro -->
+        <div class="cat-intro">
+          <div class="container">
+            <div class="cat-intro-head">
+              <span class="cat-num serif">0{catIdx + 1}</span>
+              <span class="cat-line"></span>
+              <span class="cat-label">{cat.label}</span>
+            </div>
+            <h3 class="cat-headline serif">{cat.headline}</h3>
+            <p class="cat-sub">{cat.subheadline}</p>
+          </div>
+        </div>
+
+        <!-- Individual service panels -->
+        {cat.services.map((svc, svcIdx) => (
+          <article
+            class="panel"
+            id={`service-${svc.id}`}
+            data-service={svc.id}
+            data-cat={cat.id}
+            data-index={svcIdx}
+          >
+            <div class="container panel-inner">
+
+              <!-- Left content -->
+              <div class="panel-left">
+                <div class="panel-meta">
+                  <span class="panel-num serif">{String(svcIdx + 1).padStart(2, '0')}</span>
+                  <span class="panel-meta-line"></span>
+                  <span class="panel-cat">{cat.label}</span>
+                </div>
+
+                <h4 class="panel-title serif">{svc.title}</h4>
+                <p class="panel-tagline serif-italic">{svc.tagline}</p>
+                <p class="panel-desc">{svc.description}</p>
+
+                <a href={svc.ctaHref} class="panel-link">
+                  Learn more about {svc.title.toLowerCase()}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="arr-right"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+
+              <!-- Right content: what's included -->
+              <div class="panel-right">
+                <div class="included-card">
+                  <span class="included-label">What's included</span>
+                  <ul class="included-list">
+                    {svc.bullets.map((b, i) => (
+                      <li>
+                        <span class="bi-num">{String(i + 1).padStart(2, '0')}</span>
+                        <span class="bi-text">{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  const panels     = document.querySelectorAll<HTMLElement>('.panel');
+  const dots       = document.querySelectorAll<HTMLButtonElement>('.rail-dot');
+  const cats       = document.querySelectorAll<HTMLElement>('.rail-cat');
+  const rail       = document.getElementById('rail')!;
+  const section    = document.getElementById('services')!;
+
+  // Rail visibility tied to section in viewport
+  new IntersectionObserver(
+    (entries) => entries.forEach((e) => rail.classList.toggle('visible', e.isIntersecting)),
+    { threshold: 0.02 }
+  ).observe(section);
+
+  // Active panel tracking
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const id  = entry.target.id;
+        const cat = (entry.target as HTMLElement).dataset.cat!;
+        dots.forEach((d) => d.classList.toggle('active', d.dataset.target === id));
+        cats.forEach((c) => c.classList.toggle('active', c.dataset.cat === cat));
+      });
+    },
+    { threshold: 0.5 }
+  );
+  panels.forEach((p) => io.observe(p));
+
+  // Click dot → scroll to panel
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      document.getElementById(dot.dataset.target!)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Entrance animations
+  const entryIO = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('entered');
+          entryIO.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+  document.querySelectorAll('.panel-left, .panel-right, .cat-intro > .container').forEach((el) => entryIO.observe(el));
+</script>
+
+<style>
+/* ─── Shell ────────────────────────────────────────────────── */
+.services-section {
+  background: var(--navy-900);
+  color: var(--paper);
+  position: relative;
+}
+
+/* ─── Section intro ────────────────────────────────────────── */
+.services-intro {
+  padding: var(--section-pad) 0;
+  background: var(--navy-900);
+  border-bottom: 1px solid rgba(250,248,244,0.06);
+}
+.intro-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--s-6);
+  align-items: end;
+}
+.intro-left .eyebrow { margin-bottom: var(--s-3); }
+.intro-title {
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+}
+.intro-title .italic { font-style: italic; color: var(--gold); }
+.intro-right p {
+  font-size: var(--t-lg);
+  line-height: 1.7;
+  color: rgba(250,248,244,0.65);
+  max-width: 480px;
+  padding-bottom: 0.5rem;
+}
+
+/* ─── Rail ─────────────────────────────────────────────────── */
+.rail {
+  position: fixed;
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease);
+}
+.rail.visible { opacity: 1; pointer-events: auto; }
+
+.rail-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.rail-cat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+.rail-cat-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(250,248,244,0.25);
+  transition: color 0.3s;
+}
+.rail-cat.active .rail-cat-label { color: var(--gold); }
+.rail-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+.rail-dot {
+  width: 6px; height: 6px;
+  background: rgba(250,248,244,0.2);
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+  padding: 0;
+}
+.rail-dot:hover { background: rgba(250,248,244,0.5); }
+.rail-dot.active { background: var(--gold); width: 18px; }
+
+/* ─── Category intro ──────────────────────────────────────── */
+.cat-intro {
+  padding: var(--s-7) 0 var(--s-5);
+  border-top: 1px solid rgba(250,248,244,0.06);
+}
+.cat-intro > .container {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.cat-intro > .container.entered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cat-intro-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+}
+.cat-num {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0;
+}
+.cat-line {
+  width: 60px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+.cat-label {
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.cat-headline {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  max-width: 620px;
+  margin-bottom: var(--s-2);
+}
+.cat-sub {
+  font-size: var(--t-lg);
+  line-height: 1.65;
+  color: rgba(250,248,244,0.6);
+  max-width: 520px;
+}
+
+/* ─── Panel ───────────────────────────────────────────────── */
+.panel {
+  padding: var(--s-5) 0;
+  border-top: 1px solid rgba(250,248,244,0.06);
+  position: relative;
+}
+
+.panel-inner {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: var(--s-5);
+  align-items: stretch;
+}
+
+/* Left content */
+.panel-left {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: var(--s-3);
+}
+.panel-left.entered { opacity: 1; transform: translateY(0); }
+
+.panel-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: var(--s-3);
+}
+.panel-num {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: 0;
+}
+.panel-meta-line {
+  width: 28px;
+  height: 1px;
+  background: rgba(184,148,74,0.4);
+}
+.panel-cat {
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(250,248,244,0.45);
+}
+
+.panel-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  margin-bottom: 0.5rem;
+}
+
+.panel-tagline {
+  font-size: var(--t-lg);
+  color: var(--gold);
+  font-style: italic;
+  font-family: var(--font-serif);
+  margin-bottom: var(--s-3);
+}
+
+.panel-desc {
+  font-size: var(--t-base);
+  line-height: 1.7;
+  color: rgba(250,248,244,0.68);
+  margin-bottom: var(--s-3);
+  max-width: 480px;
+}
+
+.panel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--paper);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--gold);
+  transition: gap 0.25s var(--ease), color 0.2s;
+  width: fit-content;
+}
+.panel-link svg { width: 14px; height: 14px; color: var(--gold); }
+.panel-link:hover { gap: 0.75rem; color: var(--gold); }
+
+/* Right content */
+.panel-right {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s 0.1s var(--ease), transform 0.8s 0.1s var(--ease);
+  display: flex;
+  align-items: center;
+}
+.panel-right.entered { opacity: 1; transform: translateY(0); }
+
+.included-card {
+  background: rgba(250,248,244,0.02);
+  border: 1px solid rgba(250,248,244,0.08);
+  padding: var(--s-3) var(--s-4);
+  border-radius: 2px;
+  width: 100%;
+  position: relative;
+}
+.included-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: var(--s-4); bottom: var(--s-4);
+  width: 2px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.included-label {
+  display: block;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: var(--s-2);
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(250,248,244,0.08);
+}
+
+.included-list {
+  display: flex;
+  flex-direction: column;
+}
+.included-list li {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0.65rem 0;
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  color: rgba(250,248,244,0.8);
+  border-bottom: 1px solid rgba(250,248,244,0.05);
+}
+.included-list li:last-child { border-bottom: none; }
+
+.bi-num {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+.bi-text { color: rgba(250,248,244,0.82); }
+
+/* ─── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .intro-grid,
+  .panel-inner { grid-template-columns: 1fr; gap: var(--s-4); }
+  .rail { display: none; }
+}
+@media (max-width: 520px) {
+  .panel { padding: var(--s-5) 0; }
+  .cat-intro { padding: var(--s-6) 0 var(--s-4); }
+}
+</style>

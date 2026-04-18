@@ -1,0 +1,170 @@
+---
+const clients = [
+  { name: 'PRONEX', tag: 'Real estate platform', url: 'http://pronex-ks.com/' },
+  { name: 'LIALhc', tag: 'Windows & doors', url: 'https://lialhc.com/' },
+  { name: 'GAZI', tag: 'Windows manufacturing', url: 'http://gazi-rks.com/' },
+];
+
+const stats = [
+  { num: '30', plus: true,  label: 'Countries reached' },
+  { num: '13', plus: false, label: 'Core services' },
+  { num: '100', plus: true, label: 'Clients served' },
+  { num: '3',  plus: false, label: 'Service pillars' },
+];
+---
+
+<section id="clients" class="clients-strip">
+  <div class="container">
+
+    <!-- Clients row -->
+    <ul class="cs-list">
+      {clients.map((c) => (
+        <li class="cs-item">
+          <a href={c.url} target="_blank" rel="noopener" class="cs-link">
+            <span class="cs-name serif">{c.name}</span>
+            <span class="cs-tag">{c.tag}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Divider with label -->
+    <div class="cs-divider">
+      <span class="cs-divider-line"></span>
+      <span class="cs-divider-label">
+        <span class="cs-dot"></span>
+        Trusted by operators building across borders
+      </span>
+      <span class="cs-divider-line"></span>
+    </div>
+
+    <!-- Stats -->
+    <div class="cs-stats">
+      {stats.map((s) => (
+        <div class="stat">
+          <span class="stat-num serif">{s.num}{s.plus && <span class="stat-plus">+</span>}</span>
+          <span class="stat-label">{s.label}</span>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+.clients-strip {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  padding: var(--s-5) 0;
+}
+
+/* Clients row */
+.cs-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  list-style: none;
+  align-items: center;
+}
+.cs-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: center;
+  padding: var(--s-2) var(--s-3);
+  border-left: 1px solid var(--line);
+}
+.cs-item:first-child { border-left: none; }
+
+.cs-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transition: transform 0.2s;
+}
+.cs-link:hover { transform: translateY(-1px); }
+.cs-link:hover .cs-name { color: var(--gold); }
+
+.cs-name {
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: color 0.2s;
+  line-height: 1.1;
+}
+
+.cs-tag {
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+}
+
+/* Divider */
+.cs-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: var(--s-4) 0;
+}
+.cs-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.cs-divider-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: var(--t-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cs-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* Stats */
+.cs-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-3);
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  text-align: center;
+}
+.stat-num {
+  font-size: var(--t-3xl);
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.stat-plus { color: var(--gold); font-weight: 500; }
+.stat-label {
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .cs-list { grid-template-columns: 1fr; gap: var(--s-2); }
+  .cs-item { border-left: none; border-top: 1px solid var(--line); padding: var(--s-2) 0; }
+  .cs-item:first-child { border-top: none; }
+  .cs-stats { grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  .cs-divider-label { white-space: normal; text-align: center; }
+}
+</style>
