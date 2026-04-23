@@ -1,9 +1,26 @@
-<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" width="512" height="512" rx="96" fill="#0B1622"/>
-  <text x="50%" y="54%"
-        text-anchor="middle"
-        dominant-baseline="middle"
-        font-family="Playfair Display, Fraunces, Georgia, serif"
-        font-size="300"
-        fill="#B8944A">E</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Navy tile -->
+  <rect width="100" height="100" rx="14" fill="#0B1622"/>
+
+  <!-- Serif "E" drawn as a vector path — no font dependency -->
+  <!-- Main stem -->
+  <rect x="28" y="22" width="11" height="56" fill="#B8944A"/>
+  <!-- Top arm -->
+  <rect x="28" y="22" width="40" height="9"  fill="#B8944A"/>
+  <!-- Middle arm (slightly shorter) -->
+  <rect x="28" y="46" width="28" height="8"  fill="#B8944A"/>
+  <!-- Bottom arm -->
+  <rect x="28" y="69" width="40" height="9"  fill="#B8944A"/>
+
+  <!-- Serifs: small tabs extending past the arms -->
+  <!-- Top-left -->
+  <rect x="24" y="19" width="6"  height="3"  fill="#B8944A"/>
+  <!-- Top-right -->
+  <rect x="66" y="19" width="6"  height="3"  fill="#B8944A"/>
+  <!-- Middle terminal tab -->
+  <rect x="54" y="44" width="4"  height="12" fill="#B8944A"/>
+  <!-- Bottom-left -->
+  <rect x="24" y="78" width="6"  height="3"  fill="#B8944A"/>
+  <!-- Bottom-right -->
+  <rect x="66" y="78" width="6"  height="3"  fill="#B8944A"/>
 </svg>
